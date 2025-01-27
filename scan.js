@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const fs = require("fs");
 const path = require("path");
 
@@ -73,19 +75,24 @@ function printTopComponents() {
   });
 }
 
-// Set the directory to scan (relative to where the script is executed)
-const startDirectory = path.join(__dirname, "root", "src");
+// Get the directory from command-line arguments
+const args = process.argv.slice(2);
 
-// Check if the "Portal.UI/src" folder exists
-if (!fs.existsSync(startDirectory)) {
-  console.error('No "root/src" directory found. Exiting.');
+if (args.length === 0) {
+  console.error("Please provide a directory to scan.");
   process.exit(1);
 }
 
-// Start the search in the "Portal.UI/src" directory
-console.log(
-  `Searching for files containing '.component.html' in: ${startDirectory}`
-);
+const startDirectory = path.resolve(args[0]);
+
+// Check if the specified folder exists
+if (!fs.existsSync(startDirectory)) {
+  console.error(`The directory "${startDirectory}" does not exist.`);
+  process.exit(1);
+}
+
+// Start the search in the specified directory
+console.log(`Searching for files containing '.component.html' in: ${startDirectory}`);
 findComponentFiles(startDirectory);
 
 // Wait a bit to let asynchronous operations complete, then print results
